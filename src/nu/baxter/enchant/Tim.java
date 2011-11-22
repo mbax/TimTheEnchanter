@@ -22,7 +22,7 @@ public class Tim extends JavaPlugin{
 
     @Override
     public void onEnable() {
-        this.enchantmentNames=new HashMap<String, Integer>();
+        //this.enchantmentNames=new HashMap<String, Integer>();
         
         this.getServer().getLogger().info("[Tim] There are some who call me... Tim?");
     }
@@ -124,10 +124,10 @@ public class Tim extends JavaPlugin{
         INVALID_ID,CANNOT_ENCHANT,VICIOUS_STREAK_A_MILE_WIDE;
     }
     
-    private HashMap<String, Integer> enchantmentNames;
+    /*private HashMap<String, Integer> enchantmentNames;
     
     private Enchantment matchEnchantment(String query){
         
-    }
+    }*/
 
 }
