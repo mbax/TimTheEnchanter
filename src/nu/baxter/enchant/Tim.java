@@ -1,7 +1,6 @@
 package nu.baxter.enchant;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
 
 import net.minecraft.server.Enchantment;
 import net.minecraft.server.ItemStack;
@@ -111,6 +110,12 @@ public class Tim extends JavaPlugin{
             /*if(level>enchantment.getMaxLevel()){
                 level=enchantment.getMaxLevel();
             }*/
+        if(level>127){
+            level=127;
+        }
+        else if(level <1){
+            level=1;
+        }
         try{
             stacky.a(enchantment, level);
         }
