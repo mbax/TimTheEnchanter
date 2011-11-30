@@ -41,7 +41,7 @@ public class Tim extends JavaPlugin{
                 else{
                     int targetLevel=1;
                     if(args.length>1){
-                        Integer.valueOf(args[1]);
+                        targetLevel=Integer.valueOf(args[1]);
                     }
                     enchantResult code=this.enchantDat(stack, Integer.valueOf(args[0]), targetLevel);
                     switch (code){
