@@ -1,15 +1,11 @@
 package nu.baxter.enchant;
 
-import java.lang.reflect.Field;
-
-import net.minecraft.server.Enchantment;
-import net.minecraft.server.ItemStack;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Tim extends JavaPlugin{
@@ -31,34 +27,14 @@ public class Tim extends JavaPlugin{
         if(args.length>0 && sender instanceof Player){
             Player player=(Player) sender;
             if(player.hasPermission("enchanter.enchant")){
-                CraftItemStack craftItemStack=(CraftItemStack)player.getInventory().getItemInHand();
-                Field itemField = null;
-                try {
-                    itemField=CraftItemStack.class.getDeclaredField("item");
-                } catch (Exception e) {
-                    this.getServer().getLogger().warning("[Tim] Failure in reflection, level one.");
-                    e.printStackTrace();
-                }
-                if(itemField==null){
-                    sender.sendMessage(ChatColor.YELLOW+"Look, that rabbit's got a vicious streak a mile wide! It's a killer!");
-                    sender.sendMessage("[Tim] Enchantment failed due to error :(");
-                    return true;
-                }
-                itemField.setAccessible(true);
-                ItemStack itemTarget = null;
-                try {
-                    itemTarget=(ItemStack) itemField.get(craftItemStack);
-                } catch (Exception e) {
-                    this.getServer().getLogger().warning("[TIM] Failure in reflection, level two.");
-                    e.printStackTrace();
-                }
-                if(itemTarget==null){
+                ItemStack stack=player.getInventory().getItemInHand();
+                if(stack==null){
                     sender.sendMessage(ChatColor.YELLOW+"Look, that rabbit's got a vicious streak a mile wide! It's a killer!");
                     sender.sendMessage("[Tim] Enchantment failed due to error :(");
                     return true;
                 }
                 if(args[0].equalsIgnoreCase("all")){
-                    this.enchantAll(itemTarget);
+                    this.enchantAll(stack);
                     sender.sendMessage(ChatColor.YELLOW+"[Tim] Enchantment attemped.");
                     return true;
                 }
@@ -67,7 +43,7 @@ public class Tim extends JavaPlugin{
                     if(args.length>1){
                         Integer.valueOf(args[1]);
                     }
-                    enchantResult code=this.enchantDat(itemTarget, Integer.valueOf(args[0]), targetLevel);
+                    enchantResult code=this.enchantDat(stack, Integer.valueOf(args[0]), targetLevel);
                     switch (code){
                         case INVALID_ID:sender.sendMessage(ChatColor.YELLOW+"[Tim] That's not an enchantment ID");break;
                         case CANNOT_ENCHANT:sender.sendMessage(ChatColor.YELLOW+"[Tim] Cannot enchant this item");break;
@@ -103,7 +79,7 @@ public class Tim extends JavaPlugin{
     }
     
     public enchantResult enchantDat(ItemStack stacky, int enchantmentID, int level){
-        Enchantment enchantment=Enchantment.byId[enchantmentID];
+        Enchantment enchantment=Enchantment.getById(enchantmentID);
         if(enchantment==null){
             return enchantResult.INVALID_ID;
         }
@@ -117,7 +93,7 @@ public class Tim extends JavaPlugin{
             level=1;
         }
         try{
-            stacky.a(enchantment, level);
+            stacky.addUnsafeEnchantment(enchantment, level);
         }
         catch(Exception e){
             return enchantResult.CANNOT_ENCHANT;
