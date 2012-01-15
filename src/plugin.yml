@@ -1,6 +1,6 @@
 name: TimTheEnchanter
-main: nu.baxter.enchant.Tim
-version: 1.4
+main: org.kitteh.enchant.Tim
+version: 2.0
 website: http://joe.to
 author: mbaxter
 description: There are some who call me... Tim?
@@ -9,6 +9,14 @@ commands:
     usage: |
             /enchant enchantment level
             /enchant all
+            /enchant reload
 permissions:
   enchanter.enchant:
+    description: Enchant stuff
+    default: op
+  enchanter.reload:
+    default: op
+    description: Reload the enchantment list
+  enchanter.dirty:
+    description: Allow unnatural enchantment levels
     default: op
