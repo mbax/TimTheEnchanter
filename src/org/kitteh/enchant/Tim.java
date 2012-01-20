@@ -21,7 +21,7 @@ public class Tim extends JavaPlugin {
 
     private HashMap<String, Enchantment> enchantmentNames;
 
-    public void enchantAll(Player player, boolean dirty) {
+    private void enchantAll(Player player, boolean dirty) {
         for (final Enchantment enchantment : Enchantment.values()) {
             int level;
             if (dirty) {
@@ -33,7 +33,7 @@ public class Tim extends JavaPlugin {
         }
     }
 
-    public EnchantmentResult enchantItem(Player player, Enchantment enchantment, int level) {
+    private EnchantmentResult enchantItem(Player player, Enchantment enchantment, int level) {
         if (enchantment == null) {
             return EnchantmentResult.INVALID_ID;
         }
@@ -55,7 +55,7 @@ public class Tim extends JavaPlugin {
         return EnchantmentResult.VICIOUS_STREAK_A_MILE_WIDE;
     }
 
-    public EnchantmentResult enchantItem(Player player, int enchantmentID, int level) {
+    private EnchantmentResult enchantItem(Player player, int enchantmentID, int level) {
         final Enchantment enchantment = Enchantment.getById(enchantmentID);
         if (enchantment == null) {
             return EnchantmentResult.INVALID_ID;
@@ -63,7 +63,7 @@ public class Tim extends JavaPlugin {
         return this.enchantItem(player, enchantment, level);
     }
 
-    public EnchantmentResult enchantItem(Player player, String enchantmentString, int level) {
+    private EnchantmentResult enchantItem(Player player, String enchantmentString, int level) {
         int enchantmentID;
         try {
             enchantmentID = Integer.valueOf(enchantmentString);

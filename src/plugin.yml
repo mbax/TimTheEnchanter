@@ -1,7 +1,7 @@
 name: TimTheEnchanter
 main: org.kitteh.enchant.Tim
 version: 2.0
-website: http://joe.to
+website: http://kitteh.org
 author: mbaxter
 description: There are some who call me... Tim?
 commands:
