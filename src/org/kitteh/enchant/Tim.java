@@ -108,8 +108,8 @@ public class Tim extends JavaPlugin {
                                 }
                             }
                         }
-                        final EnchantmentResult code = this.enchantItem(player, args[0], targetLevel);
-                        switch (code) {
+                        final EnchantmentResult result = this.enchantItem(player, args[0], targetLevel);
+                        switch (result) {
                             case INVALID_ID:
                                 sender.sendMessage(ChatColor.YELLOW + "[Tim] That's not an enchantment ID");
                                 break;
@@ -117,7 +117,7 @@ public class Tim extends JavaPlugin {
                                 sender.sendMessage(ChatColor.YELLOW + "[Tim] Cannot enchant this item");
                                 break;
                         }
-                        if (code != EnchantmentResult.VICIOUS_STREAK_A_MILE_WIDE) {
+                        if (!result.equals(EnchantmentResult.VICIOUS_STREAK_A_MILE_WIDE)) {
                             player.sendMessage(ChatColor.YELLOW + "Look, that rabbit's got a vicious streak a mile wide! It's a killer!");
                             return true;
                         }
@@ -126,6 +126,7 @@ public class Tim extends JavaPlugin {
                     return true;
                 } else {
                     sender.sendMessage(ChatColor.YELLOW + "[Tim] I don't think so.");
+                    return true;
                 }
             }
         }
@@ -151,7 +152,8 @@ public class Tim extends JavaPlugin {
     private void loadEnchantments() {
         this.reloadConfig();
         this.enchantmentNames = new HashMap<String, Enchantment>();
-        if (!(new File(this.getDataFolder(), "config.yml")).exists()) {
+        final boolean noConfig = !(new File(this.getDataFolder(), "config.yml")).exists();
+        if (noConfig) {
             this.getConfig().options().copyDefaults(true);
         }
         final Map<String, Object> map = this.getConfig().getValues(false);
@@ -164,9 +166,13 @@ public class Tim extends JavaPlugin {
             }
             if (enchantment != null) {
                 this.enchantmentNames.put(entry.getKey().toLowerCase(), enchantment);
+            } else {
+                this.getServer().getLogger().info("[Tim] Ignoring custom name \"" + entry.getKey() + "\". Bad enchantment ID");
             }
         }
-        this.saveConfig();
+        if (noConfig) {
+            this.saveConfig();
+        }
     }
 
 }

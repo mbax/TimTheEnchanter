@@ -8,7 +8,9 @@ commands:
   enchant:
     usage: |
             /enchant enchantment level
+            /enchant enchantment max
             /enchant all
+            /enchant all natural
             /enchant reload
 permissions:
   enchanter.enchant:
