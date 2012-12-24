@@ -30,7 +30,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Tim extends JavaPlugin {
 
-    private static final int MAX_ENCHANT = 127;
+    private static final int MAX_ENCHANT = 1000;
 
     private enum EnchantmentResult {
         INVALID_ID,
