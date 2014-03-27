@@ -38,7 +38,17 @@ public class Tim extends JavaPlugin {
         VICIOUS_STREAK_A_MILE_WIDE
     }
 
-    private final Map<String, Enchantment> enchantmentNames = new HashMap<String, Enchantment>();
+    private final Map<String, Enchantment> enchantmentNames = new HashMap<String, Enchantment>() {
+        @Override
+        public Enchantment get(Object key) {
+            return super.get(key.toString().toLowerCase());
+        }
+
+        @Override
+        public Enchantment put(String key, Enchantment enchantment) {
+            return super.put(key.toLowerCase(), enchantment);
+        }
+    };
 
     private EnchantmentResult enchantItem(Player player, Enchantment enchantment, int level) {
         if (enchantment == null) {
@@ -138,7 +148,7 @@ public class Tim extends JavaPlugin {
     }
 
     private Enchantment getEnchantment(String query) {
-        return this.enchantmentNames.get(query.toLowerCase());
+        return this.enchantmentNames.get(query);
     }
 
     private void loadEnchantments(CommandSender sender) {
@@ -154,7 +164,7 @@ public class Tim extends JavaPlugin {
                 enchantment = null;
             }
             if (enchantment != null) {
-                this.enchantmentNames.put(entry.getKey().toLowerCase(), enchantment);
+                this.enchantmentNames.put(entry.getKey(), enchantment);
             } else {
                 sender.sendMessage(ChatColor.RED + MESSAGE_NAME + "Ignoring name \"" + entry.getKey() + "\". Bad enchantment ID (" + entry.getValue() + ")");
             }
