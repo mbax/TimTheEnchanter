@@ -1,6 +1,6 @@
 /*
  * Tim the Enchanter
- * Copyright 2012 Matt Baxter
+ * Copyright 2012-2014 Matt Baxter
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,6 @@
  */
 package org.kitteh.enchant;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -28,17 +24,23 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 public class Tim extends JavaPlugin {
 
     private static final int MAX_ENCHANT = 1000;
+    private static final String MESSAGE_NAME = "[Tim] ";
+    private static final String MESSAGE_COLOR = ChatColor.YELLOW + MESSAGE_NAME;
 
     private enum EnchantmentResult {
         INVALID_ID,
         CANNOT_ENCHANT,
-        VICIOUS_STREAK_A_MILE_WIDE;
+        VICIOUS_STREAK_A_MILE_WIDE
     }
 
-    private HashMap<String, Enchantment> enchantmentNames = new HashMap<String, Enchantment>();
+    private final Map<String, Enchantment> enchantmentNames = new HashMap<String, Enchantment>();
 
     private EnchantmentResult enchantItem(Player player, Enchantment enchantment, int level) {
         if (enchantment == null) {
@@ -73,10 +75,10 @@ public class Tim extends JavaPlugin {
             if (args[0].equalsIgnoreCase("reload")) {
                 if (sender.hasPermission("enchanter.reload")) {
                     this.loadEnchantments(sender);
-                    sender.sendMessage(ChatColor.GREEN + "[Tim] Enchantment list reloaded");
+                    sender.sendMessage(ChatColor.GREEN + MESSAGE_NAME + "Enchantment list reloaded");
                     return true;
                 } else {
-                    sender.sendMessage(ChatColor.YELLOW + "[Tim] I don't think so.");
+                    sender.sendMessage(MESSAGE_COLOR + "I don't think so.");
                     return true;
                 }
             }
@@ -84,11 +86,11 @@ public class Tim extends JavaPlugin {
                 final Player player = (Player) sender;
                 if (player.hasPermission("enchanter.enchant")) {
                     if (args[0].equalsIgnoreCase("all")) {
-                        boolean dirty = ((args.length > 1) && args[1].equalsIgnoreCase("natural")) ? false : true;
+                        boolean dirty = (!((args.length > 1) && args[1].equalsIgnoreCase("natural")));
                         for (final Enchantment enchantment : Enchantment.values()) {
                             this.enchantItem(player, enchantment, dirty ? MAX_ENCHANT : enchantment.getMaxLevel());
                         }
-                        sender.sendMessage(ChatColor.YELLOW + "[Tim] Enchanted to the best of my abilities");
+                        sender.sendMessage(MESSAGE_COLOR + "Enchanted to the best of my abilities");
                         return true;
                     } else {
                         int targetLevel = 1;
@@ -104,26 +106,26 @@ public class Tim extends JavaPlugin {
                         final EnchantmentResult result = this.enchantItem(player, args[0], targetLevel);
                         switch (result) {
                             case INVALID_ID:
-                                sender.sendMessage(ChatColor.YELLOW + "[Tim] That's not an enchantment ID");
+                                sender.sendMessage(MESSAGE_COLOR + "That's not an enchantment ID");
                                 break;
                             case CANNOT_ENCHANT:
-                                sender.sendMessage(ChatColor.YELLOW + "[Tim] Cannot enchant this item");
+                                sender.sendMessage(MESSAGE_COLOR + "Cannot enchant this item");
                                 break;
                         }
                         if (!result.equals(EnchantmentResult.VICIOUS_STREAK_A_MILE_WIDE)) {
-                            player.sendMessage(ChatColor.YELLOW + "Look, that rabbit's got a vicious streak a mile wide! It's a killer!");
+                            player.sendMessage(MESSAGE_COLOR + "Look, that rabbit's got a vicious streak a mile wide! It's a killer!");
                             return true;
                         }
                     }
-                    sender.sendMessage(ChatColor.YELLOW + "[Tim] Item enchanted. I... am an enchanter.");
+                    sender.sendMessage(MESSAGE_COLOR + "Item enchanted. I... am an enchanter.");
                     return true;
                 } else {
-                    sender.sendMessage(ChatColor.YELLOW + "[Tim] I don't think so.");
+                    sender.sendMessage(MESSAGE_COLOR + "I don't think so.");
                     return true;
                 }
             }
         }
-        sender.sendMessage(ChatColor.YELLOW + "[Tim] Death awaits you all with nasty, big, pointy teeth.");
+        sender.sendMessage(MESSAGE_COLOR + "Death awaits you all with nasty, big, pointy teeth.");
         return false;
     }
 
@@ -148,7 +150,7 @@ public class Tim extends JavaPlugin {
         this.reloadConfig();
         final Map<String, Object> map = this.getConfig().getValues(false);
         for (final Map.Entry<String, Object> entry : map.entrySet()) {
-            Enchantment enchantment = null;
+            Enchantment enchantment;
             try {
                 enchantment = Enchantment.getById((Integer) entry.getValue());
             } catch (final Exception e) {
@@ -157,7 +159,7 @@ public class Tim extends JavaPlugin {
             if (enchantment != null) {
                 this.enchantmentNames.put(entry.getKey().toLowerCase(), enchantment);
             } else {
-                sender.sendMessage(ChatColor.RED + "[Tim] Ignoring name \"" + entry.getKey() + "\". Bad enchantment ID (" + entry.getValue() + ")");
+                sender.sendMessage(ChatColor.RED + MESSAGE_NAME + "Ignoring name \"" + entry.getKey() + "\". Bad enchantment ID (" + entry.getValue() + ")");
             }
         }
         StringBuilder builder = new StringBuilder();
@@ -168,7 +170,7 @@ public class Tim extends JavaPlugin {
             }
         }
         if (builder.length() > 0) {
-            builder.insert(0, "[Tim] Unused enchantments: ").insert(0, ChatColor.YELLOW);
+            builder.insert(0, MESSAGE_NAME + "Unused enchantments: ").insert(0, ChatColor.YELLOW);
             sender.sendMessage(builder.toString());
         }
     }
