@@ -147,7 +147,13 @@ public class Tim extends JavaPlugin {
         this.getLogger().info("There are some who call me... Tim?");
     }
 
-    private Enchantment getEnchantment(String query) {
+    /**
+     * Gets an enchantment by configured name.
+     *
+     * @param query name of the enchantment
+     * @return the named enchantment or null if there is no match
+     */
+    public Enchantment getEnchantment(String query) {
         return this.enchantmentNames.get(query);
     }
 
