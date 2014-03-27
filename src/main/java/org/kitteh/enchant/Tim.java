@@ -24,12 +24,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Tim extends JavaPlugin {
-
     private static final int MAX_ENCHANT = 1000;
     private static final String MESSAGE_NAME = "[Tim] ";
     private static final String MESSAGE_COLOR = ChatColor.YELLOW + MESSAGE_NAME;
@@ -82,47 +80,46 @@ public class Tim extends JavaPlugin {
                     return true;
                 }
             }
-            if (sender instanceof Player) {
-                final Player player = (Player) sender;
-                if (player.hasPermission("enchanter.enchant")) {
-                    if (args[0].equalsIgnoreCase("all")) {
-                        boolean dirty = (!((args.length > 1) && args[1].equalsIgnoreCase("natural")));
-                        for (final Enchantment enchantment : Enchantment.values()) {
-                            this.enchantItem(player, enchantment, dirty ? MAX_ENCHANT : enchantment.getMaxLevel());
-                        }
-                        sender.sendMessage(MESSAGE_COLOR + "Enchanted to the best of my abilities");
-                        return true;
-                    } else {
-                        int targetLevel = 1;
-                        if (args.length > 1) {
-                            try {
-                                targetLevel = Integer.valueOf(args[1]);
-                            } catch (final NumberFormatException e) {
-                                if (args[1].equalsIgnoreCase("max")) {
-                                    targetLevel = -1;
-                                }
-                            }
-                        }
-                        final EnchantmentResult result = this.enchantItem(player, args[0], targetLevel);
-                        switch (result) {
-                            case INVALID_ID:
-                                sender.sendMessage(MESSAGE_COLOR + "That's not an enchantment ID");
-                                break;
-                            case CANNOT_ENCHANT:
-                                sender.sendMessage(MESSAGE_COLOR + "Cannot enchant this item");
-                                break;
-                        }
-                        if (!result.equals(EnchantmentResult.VICIOUS_STREAK_A_MILE_WIDE)) {
-                            player.sendMessage(MESSAGE_COLOR + "Look, that rabbit's got a vicious streak a mile wide! It's a killer!");
-                            return true;
-                        }
+            if (!(sender instanceof Player)) {
+                sender.sendMessage(MESSAGE_COLOR + "I don't think so.");
+                return true;
+            }
+            final Player player = (Player) sender;
+            if (sender.hasPermission("enchanter.enchant")) {
+                if (args[0].equalsIgnoreCase("all")) {
+                    boolean dirty = (!((args.length > 1) && args[1].equalsIgnoreCase("natural")));
+                    for (final Enchantment enchantment : Enchantment.values()) {
+                        this.enchantItem(player, enchantment, dirty ? MAX_ENCHANT : enchantment.getMaxLevel());
                     }
-                    sender.sendMessage(MESSAGE_COLOR + "Item enchanted. I... am an enchanter.");
+                    sender.sendMessage(MESSAGE_COLOR + "Enchanted to the best of my abilities");
                     return true;
                 } else {
-                    sender.sendMessage(MESSAGE_COLOR + "I don't think so.");
-                    return true;
+                    int targetLevel = 1;
+                    if (args.length > 1) {
+                        try {
+                            targetLevel = Integer.valueOf(args[1]);
+                        } catch (final NumberFormatException e) {
+                            if (args[1].equalsIgnoreCase("max")) {
+                                targetLevel = -1;
+                            }
+                        }
+                    }
+                    final EnchantmentResult result = this.enchantItem(player, args[0], targetLevel);
+                    switch (result) {
+                        case INVALID_ID:
+                            sender.sendMessage(MESSAGE_COLOR + "That's not an enchantment ID");
+                            break;
+                        case CANNOT_ENCHANT:
+                            sender.sendMessage(MESSAGE_COLOR + "Cannot enchant this item");
+                            break;
+                    }
+                    if (!result.equals(EnchantmentResult.VICIOUS_STREAK_A_MILE_WIDE)) {
+                        sender.sendMessage(ChatColor.YELLOW + "Look, that rabbit's got a vicious streak a mile wide! It's a killer!");
+                        return true;
+                    }
                 }
+                sender.sendMessage(MESSAGE_COLOR + "Item enchanted. I... am an enchanter.");
+                return true;
             }
         }
         sender.sendMessage(MESSAGE_COLOR + "Death awaits you all with nasty, big, pointy teeth.");
@@ -163,16 +160,14 @@ public class Tim extends JavaPlugin {
             }
         }
         StringBuilder builder = new StringBuilder();
-        Collection<Enchantment> registeredEnchantments = this.enchantmentNames.values();
         for (Enchantment enchantment : Enchantment.values()) {
-            if (!registeredEnchantments.contains(enchantment)) {
+            if (!this.enchantmentNames.containsValue(enchantment)) {
                 builder.append(enchantment.getName()).append('(').append(enchantment.getId()).append(") ");
             }
         }
         if (builder.length() > 0) {
-            builder.insert(0, MESSAGE_NAME + "Unused enchantments: ").insert(0, ChatColor.YELLOW);
+            builder.insert(0, MESSAGE_COLOR + "Unused enchantments: ");
             sender.sendMessage(builder.toString());
         }
     }
-
 }
