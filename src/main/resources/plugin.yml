@@ -1,7 +1,7 @@
 name: TimTheEnchanter
 main: org.kitteh.enchant.Tim
 version: '${project.version}'
-website: http://kitteh.org
+website: https://kitteh.org
 author: mbaxter
 description: There are some who call me... Tim?
 commands:
@@ -11,14 +11,10 @@ commands:
             /enchant enchantment max
             /enchant all
             /enchant all natural
-            /enchant reload
 permissions:
   enchanter.enchant:
     description: Enchant stuff
     default: op
-  enchanter.reload:
-    default: op
-    description: Reload the enchantment list
   enchanter.dirty:
     description: Allow unnatural enchantment levels
     default: op
