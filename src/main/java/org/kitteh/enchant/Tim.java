@@ -18,6 +18,7 @@
 package org.kitteh.enchant;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -25,8 +26,8 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class Tim extends JavaPlugin {
     private static final int MAX_ENCHANT = 1000;
@@ -39,7 +40,7 @@ public class Tim extends JavaPlugin {
         VICIOUS_STREAK_A_MILE_WIDE
     }
 
-    private @NonNull EnchantmentResult enchantItem(@NonNull Player player, @Nullable Enchantment enchantment, int level) {
+    private @NotNull EnchantmentResult enchantItem(@NotNull Player player, @Nullable Enchantment enchantment, int level) {
         if (enchantment == null) {
             return EnchantmentResult.INVALID_ID;
         }
@@ -47,7 +48,9 @@ public class Tim extends JavaPlugin {
             level = enchantment.getMaxLevel();
         }
         final ItemStack item = player.getInventory().getItemInMainHand();
-        if (item == null) {
+        if (item.getType() == Material.AIR) {
+        // if (item == null) {
+        // based on https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/inventory/PlayerInventory.html#getItemInMainHand(), item is never null
             return EnchantmentResult.CANNOT_ENCHANT;
         }
         try {
@@ -59,7 +62,7 @@ public class Tim extends JavaPlugin {
     }
 
     @Override
-    public boolean onCommand(@NonNull CommandSender sender, @NonNull Command command, @NonNull String label, @NonNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length > 0) {
             if (!(sender instanceof Player)) {
                 sender.sendMessage(Tim.MESSAGE_COLOR + "I don't think so.");
